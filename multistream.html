@@ -56,15 +56,15 @@
     gap: 8px;
   }
   .brand-icon {
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, var(--accent) 0%, #5c16c5 100%);
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #a855f7 0%, #6d28d9 50%, #4c1d95 100%);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
     flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(109, 40, 217, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
   }
   .brand-name {
     font-size: 15px;
@@ -463,13 +463,46 @@
     gap: 6px;
     transition: all 0.15s;
   }
-  .modal-tab .tab-icon { font-size: 24px; line-height: 1; }
   .modal-tab:hover { border-color: var(--border-mid); color: var(--text-primary); }
   .modal-tab.active {
     background: var(--accent-glow);
     border-color: var(--accent);
     color: var(--accent-light);
   }
+  .tab-platform-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .tab-platform-icon svg { width: 100%; height: 100%; display: block; }
+  .tab-platform-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .tab-platform-desc { font-size: 11px; color: var(--text-muted); }
+  .modal-tab.active .tab-platform-desc { color: var(--accent-light); opacity: 0.85; }
+
+  /* Platform link (open site) */
+  .modal-platform-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 16px;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .modal-platform-link:hover {
+    color: var(--text-primary);
+    border-color: var(--border-mid);
+    background: var(--surface);
+  }
+  .modal-platform-link .link-ext { font-size: 11px; opacity: 0.7; }
 
   .modal-input-area { display: none; }
   .modal-input-area.visible { display: block; }
@@ -713,7 +746,17 @@
 
 <header>
   <div class="brand">
-    <div class="brand-icon">📺</div>
+    <div class="brand-icon">
+      <!-- 4-screen grid icon representing multi-stream -->
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.95"/>
+        <rect x="10" y="0" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.7"/>
+        <rect x="0" y="10" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.6"/>
+        <rect x="10" y="10" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.4"/>
+        <!-- Play triangle on top-left screen -->
+        <polygon points="2.5,2.5 2.5,5.5 5,4" fill="white" fill-opacity="0.0"/>
+      </svg>
+    </div>
     <span class="brand-name">MultiStream</span>
   </div>
   <div class="header-divider"></div>
@@ -739,15 +782,32 @@
     <div id="modal-input-section">
       <div class="modal-tabs">
         <button class="modal-tab" id="tab-yt" onclick="switchTab('youtube')">
-          <span class="tab-icon">🔴</span>
-          YouTube
+          <div class="tab-platform-icon">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="44" height="44" fill="#FF0000"/>
+              <path d="M33 16.5s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C25.7 12 22 12 22 12s-3.7 0-6.8.4c-.6.1-1.9.1-3 1.3-.9.8-1.2 2.8-1.2 2.8S10.7 18.8 10.7 22v2c0 2.3.3 4.5.3 4.5s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C17.5 32.8 22 33 22 33s3.7 0 6.8-.5c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.2.3-4.5v-2c0-2.2-.3-4.4-.3-4.4zm-13.2 9.1V18.4l8.2 3.6-8.2 3.6z" fill="white"/>
+            </svg>
+          </div>
+          <span class="tab-platform-name">YouTube</span>
+          <span class="tab-platform-desc">動画・ライブ配信</span>
         </button>
         <button class="modal-tab" id="tab-tw" onclick="switchTab('twitch')">
-          <span class="tab-icon">🟣</span>
-          Twitch
+          <div class="tab-platform-icon">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="44" height="44" fill="#9147FF"/>
+              <path d="M13 9L9 13.5v19.5h7.5v4.5L21 33h5.5l9-9V9H13zm18.5 21L27 34.5h-5L18 39v-4.5h-6.5V11.5h20v18.5z" fill="white"/>
+              <rect x="24.5" y="16" width="3" height="7.5" rx="1.5" fill="white"/>
+              <rect x="17.5" y="16" width="3" height="7.5" rx="1.5" fill="white"/>
+            </svg>
+          </div>
+          <span class="tab-platform-name">Twitch</span>
+          <span class="tab-platform-desc">ライブ配信</span>
         </button>
       </div>
       <div class="modal-input-area" id="area-youtube">
+        <a href="https://www.youtube.com" target="_blank" class="modal-platform-link">
+          YouTubeで配信・動画を探す <span class="link-ext">↗</span>
+        </a>
         <input class="modal-input" id="yt-input" placeholder="例: https://www.youtube.com/watch?v=xxxxx">
         <p class="modal-hint">
           YouTube の動画URL・Shorts URL・ライブURL など各種形式に対応しています。<br>
@@ -755,6 +815,9 @@
         </p>
       </div>
       <div class="modal-input-area" id="area-twitch">
+        <a href="https://www.twitch.tv/directory/all" target="_blank" class="modal-platform-link">
+          Twitchで配信中のチャンネルを探す <span class="link-ext">↗</span>
+        </a>
         <input class="modal-input" id="tw-input" placeholder="例: ninja（ユーザー名またはURL）">
         <p class="modal-hint">
           Twitch のユーザー名またはURLを入力してください。<br>
