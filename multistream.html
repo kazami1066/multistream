@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MultiStream — マルチ配信ビューワー</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -741,6 +742,22 @@
     display: flex;
     gap: 8px;
     justify-content: flex-end;
+  }
+
+  /* ─── Mobile Portrait ─── */
+  @media (max-width: 768px) and (orientation: portrait) {
+    #viewer {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: unset !important;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .panel {
+      /* 16:9 の高さ + パネルヘッダー分 */
+      height: calc(56.25vw + 34px);
+      flex-shrink: 0;
+    }
   }
 </style>
 </head>
