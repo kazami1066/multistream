@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プライバシーポリシー — MultiStream</title>
+<meta name="description" content="MultiStreamのプライバシーポリシー。当サービスにおける情報の取り扱い、第三者サービスの利用、Cookieおよび広告について説明しています。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:            #0d0d10;
+    --surface:       #16161b;
+    --surface-high:  #1d1d24;
+    --border:        #28283a;
+    --border-mid:    #333344;
+    --accent:        #9147ff;
+    --accent-light:  #bf94ff;
+    --accent-glow:   #9147ff33;
+    --text-primary:  #f0f0f5;
+    --text-secondary:#8c8ca0;
+    --text-muted:    #4e4e64;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.7;
+  }
+
+  /* ─── Nav ─── */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(13,13,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #a855f7 0%, #6d28d9 50%, #4c1d95 100%);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(109,40,217,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .nav-name {
+    font-size: 15px; font-weight: 700;
+    background: linear-gradient(90deg, #bf94ff 0%, #a970ff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .nav-links { display: flex; align-items: center; gap: 8px; }
+  .nav-link {
+    color: var(--text-secondary); text-decoration: none; font-size: 13px;
+    font-weight: 500; padding: 6px 12px; border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-link:hover { color: var(--text-primary); background: var(--surface); }
+  .nav-cta {
+    background: var(--accent); color: #fff; text-decoration: none;
+    font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
+    transition: opacity 0.15s; box-shadow: 0 2px 8px rgba(145,71,255,0.4);
+  }
+  .nav-cta:hover { opacity: 0.88; }
+
+  /* ─── Layout ─── */
+  .page-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* ─── Header ─── */
+  .page-header { margin-bottom: 48px; }
+  .page-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(145,71,255,0.35);
+    border-radius: 999px; padding: 4px 12px;
+    font-size: 11px; font-weight: 600; color: var(--accent-light);
+    margin-bottom: 16px;
+  }
+  .page-title {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 800; letter-spacing: -1px;
+    line-height: 1.2; margin-bottom: 12px;
+  }
+  .page-date {
+    font-size: 13px; color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  /* ─── Sections ─── */
+  .policy-section {
+    padding-top: 32px;
+    margin-bottom: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .policy-section:first-of-type { border-top: none; padding-top: 0; }
+
+  .policy-section h2 {
+    font-size: 17px; font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    letter-spacing: -0.3px;
+  }
+
+  .policy-section p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 12px;
+  }
+
+  .policy-section ul {
+    margin: 8px 0 14px 20px;
+  }
+  .policy-section ul li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.85;
+    margin-bottom: 6px;
+  }
+
+  /* Third-party service cards */
+  .service-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .service-card-name {
+    font-size: 14px; font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .service-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px;
+  }
+  .badge-yt { background: rgba(255,0,0,0.15); color: #ff5a5a; border: 1px solid rgba(255,0,0,0.25); }
+  .badge-tw { background: rgba(145,71,255,0.15); color: var(--accent-light); border: 1px solid rgba(145,71,255,0.3); }
+  .badge-g  { background: rgba(66,133,244,0.15); color: #7ab4f5; border: 1px solid rgba(66,133,244,0.25); }
+  .service-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.85;
+    margin-bottom: 8px;
+  }
+  .service-card p:last-child { margin-bottom: 0; }
+  .policy-link {
+    color: var(--accent-light);
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .policy-link:hover { text-decoration: underline; }
+
+  /* Optout box */
+  .optout-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+  .optout-box strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 40px 24px; margin-top: 40px;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-copy { font-size: 12px; color: var(--text-muted); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-link {
+    font-size: 12px; color: var(--text-muted);
+    text-decoration: none; transition: color 0.15s;
+  }
+  .footer-link:hover { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">
+    <div class="nav-logo">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="0" y="0" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.95"/>
+        <rect x="10" y="0" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.7"/>
+        <rect x="0" y="10" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.6"/>
+        <rect x="10" y="10" width="8" height="8" rx="1.5" fill="white" fill-opacity="0.4"/>
+      </svg>
+    </div>
+    <span class="nav-name">MultiStream</span>
+  </a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">ホーム</a>
+    <a href="/guide" class="nav-link">使い方</a>
+    <a href="/multistream" class="nav-cta">アプリを開く →</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div class="page-badge">📄 法的情報</div>
+    <h1 class="page-title">プライバシーポリシー</h1>
+    <p class="page-date">制定日：2026年6月21日</p>
+  </div>
+
+  <!-- 1 -->
+  <section class="policy-section">
+    <h2>1. はじめに</h2>
+    <p>MultiStream（以下「当サービス」）は、YouTubeおよびTwitchの配信を複数画面で同時視聴できる無料のウェブサービスです。当サービスを運営する者（以下「運営者」）は、ユーザーのプライバシーを尊重し、個人情報の適切な取り扱いに努めます。</p>
+    <p>このプライバシーポリシーは、当サービスにおける情報の収集・利用・第三者への提供等について説明するものです。当サービスをご利用になる場合は、本ポリシーの内容にご同意いただいたものとみなします。</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="policy-section">
+    <h2>2. 当サービスが収集する情報</h2>
+    <p>当サービスはユーザー登録・ログイン機能を持たず、お名前・メールアドレス・住所などの個人情報を直接収集・保存することはありません。</p>
+    <p>ただし、当サービスが利用する以下の第三者サービスが、それぞれのプライバシーポリシーに基づき情報を収集・処理する場合があります。詳しくは「第3条 第三者サービスについて」をご確認ください。</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="policy-section">
+    <h2>3. 第三者サービスについて</h2>
+    <p>当サービスは以下の第三者サービスを利用しており、各サービスのサーバーとの通信が発生します。通信に際してIPアドレスなどの情報が各社に送信される場合があります。</p>
+
+    <div class="service-card">
+      <div class="service-card-name">
+        <span class="service-badge badge-yt">YouTube</span>
+        YouTube / Google LLC
+      </div>
+      <p>当サービスでは、YouTube IFrame APIを使用してYouTubeの動画・ライブ配信を埋め込み表示しています。動画の読み込みおよび再生時にGoogleのサーバーと通信が行われ、Googleのクッキーポリシーおよびプライバシーポリシーが適用されます。</p>
+      <p><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="policy-link">Googleのプライバシーポリシー ↗</a></p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-card-name">
+        <span class="service-badge badge-tw">Twitch</span>
+        Twitch Interactive, Inc.
+      </div>
+      <p>当サービスでは、Twitch Embed SDKを使用してTwitchのライブ配信を埋め込み表示しています。また、配信者の表示名取得および配信状況の確認のためにTwitchのサーバーと通信を行います。これらの通信にはTwitchのプライバシーポリシーが適用されます。</p>
+      <p><a href="https://www.twitch.tv/p/legal/privacy-policy/" target="_blank" rel="noopener" class="policy-link">Twitchのプライバシーポリシー ↗</a></p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-card-name">
+        <span class="service-badge badge-g">Google</span>
+        Google Fonts（Google LLC）
+      </div>
+      <p>当サービスでは、Googleが提供するWebフォントサービス（Google Fonts）を利用しています。フォントの読み込み時にGoogleのサーバーへの通信が発生し、IPアドレス等の情報がGoogleに送信される場合があります。</p>
+      <p><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="policy-link">Googleのプライバシーポリシー ↗</a></p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="policy-section">
+    <h2>4. Cookieについて</h2>
+    <p>当サービス自体はCookieを設定・使用しません。ただし、埋め込まれたYouTubeおよびTwitchのプレーヤーは、各サービスのポリシーに基づきCookieを設定・使用する場合があります。</p>
+    <p>Cookieとは、ウェブサイトがブラウザに保存する小さなテキストファイルです。ブラウザの設定からCookieを無効にすることができますが、一部のコンテンツが正常に表示されない場合があります。</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="policy-section">
+    <h2>5. 広告について</h2>
+    <p>当サービスでは、Google AdSenseによる広告を掲載することがあります。Google AdSenseは、ユーザーの過去の閲覧履歴や興味・関心に基づいたパーソナライズ広告を表示するためにCookieを使用します。</p>
+    <p>Googleは広告配信にあたり以下の情報を利用する場合があります。</p>
+    <ul>
+      <li>当サービスおよびその他のウェブサイトへの過去のアクセス情報</li>
+      <li>ブラウザの種類・言語設定・おおよその位置情報（IPアドレスに基づく）</li>
+      <li>ユーザーの興味・関心（Googleが推定するもの）</li>
+    </ul>
+
+    <div class="optout-box">
+      <strong>広告のパーソナライズをオプトアウトする方法</strong>
+      パーソナライズ広告を希望しない場合は、<a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" class="policy-link">Googleの広告設定ページ</a>からオプトアウトできます。また、<a href="https://www.aboutads.info/" target="_blank" rel="noopener" class="policy-link">aboutads.info</a> からも無効化できます。
+    </div>
+
+    <p>Google AdSenseの仕組みについて詳しくは、<a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener" class="policy-link">Googleの広告に関するポリシー ↗</a> をご参照ください。</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="policy-section">
+    <h2>6. 外部リンクについて</h2>
+    <p>当サービスにはYouTube・Twitchなど外部ウェブサイトへのリンクが含まれます。リンク先のウェブサイトにおける情報の取り扱いは、各サービスのプライバシーポリシーに従います。運営者は外部サービスの取り扱いに関して一切の責任を負いません。</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="policy-section">
+    <h2>7. 個人情報の保護</h2>
+    <p>当サービスは、個人情報の保護に関する法律（個人情報保護法）を遵守し、ユーザーの個人情報を適切に取り扱います。当サービスが個人情報を収集する場合には、利用目的を明示した上で必要最小限の範囲に限って収集します。</p>
+  </section>
+
+  <!-- 8 -->
+  <section class="policy-section">
+    <h2>8. お問い合わせ</h2>
+    <p>プライバシーポリシーに関するお問い合わせは、以下の連絡先までお願いします。</p>
+    <div class="optout-box">
+      <strong>運営者連絡先</strong>
+      メールアドレス：<a href="mailto:multistream.contact@gmail.com" class="policy-link">multistream.contact@gmail.com</a>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="policy-section">
+    <h2>9. プライバシーポリシーの変更</h2>
+    <p>運営者は、法令の改正やサービス内容の変更等に応じて、本ポリシーを予告なく変更することがあります。変更後のポリシーは当ページに掲載した時点で効力を生じるものとします。重要な変更がある場合は、当サービス上でお知らせします。</p>
+    <p class="page-date" style="margin-top:16px">制定日：2026年6月21日</p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 MultiStream</span>
+    <div class="footer-links">
+      <a href="/" class="footer-link">ホーム</a>
+      <a href="/guide" class="footer-link">使い方</a>
+      <a href="/privacy" class="footer-link">プライバシーポリシー</a>
+      <a href="/multistream" class="footer-link">アプリを開く</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
