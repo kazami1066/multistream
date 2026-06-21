@@ -426,6 +426,66 @@
   }
   .note-box .tip-icon { font-size: 16px; flex-shrink: 0; }
 
+  /* ─── Layout mockup ─── */
+  .mock-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface-high);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .mock-layout-btn {
+    width: 28px; height: 26px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); cursor: default; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .mock-layout-dropdown {
+    background: var(--surface-high);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 180px;
+    margin: 8px 0;
+  }
+  .mock-layout-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: default;
+  }
+  .mock-layout-option.active {
+    background: rgba(145,71,255,0.15);
+    color: var(--accent-light);
+  }
+  .mock-layout-option-icon {
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; opacity: 0.8;
+  }
+  /* main+side grid mockup */
+  .mock-grid-main-side {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 3px;
+    height: 160px;
+  }
+  .mock-grid-main-side .mock-cell:first-child {
+    grid-row: 1 / 3;
+  }
+
   /* ─── Footer ─── */
   footer {
     background: var(--surface);
@@ -481,6 +541,7 @@
       <li class="toc-item"><a href="#start" class="toc-link">MultiStreamを開く</a></li>
       <li class="toc-item"><a href="#add" class="toc-link">配信を追加する</a></li>
       <li class="toc-item"><a href="#count" class="toc-link">画面数を変える</a></li>
+      <li class="toc-item"><a href="#layout" class="toc-link">レイアウトを切り替える</a></li>
       <li class="toc-item"><a href="#move" class="toc-link">パネルを並び替える</a></li>
       <li class="toc-item"><a href="#controls" class="toc-link">再生・ミュートを操作する</a></li>
       <li class="toc-item"><a href="#title" class="toc-link">タイトルを変更する</a></li>
@@ -831,8 +892,152 @@
     </section>
 
     <!-- 4 -->
-    <section class="guide-section" id="move">
+    <section class="guide-section" id="layout">
       <div class="section-num">4</div>
+      <h2 class="section-title">レイアウトを切り替える</h2>
+      <p class="section-lead">ヘッダーの「画面数」の左隣にあるレイアウトボタンで、パネルの並び方を3種類から選択できます。</p>
+
+      <!-- ヘッダーモックアップ -->
+      <div class="mockup-wrap">
+        <div class="mockup-label-bar">ヘッダー右上のレイアウトボタン（画面数の左隣）</div>
+        <div class="mockup-body" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div class="mock-header-row">
+            <!-- レイアウトボタン -->
+            <div class="mock-layout-btn" title="レイアウトを変更">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--text-secondary)">
+                <rect x="0" y="0" width="6" height="6" rx="1"/>
+                <rect x="8" y="0" width="6" height="6" rx="1"/>
+                <rect x="0" y="8" width="6" height="6" rx="1"/>
+                <rect x="8" y="8" width="6" height="6" rx="1"/>
+              </svg>
+            </div>
+            <div style="width:1px;height:20px;background:var(--border)"></div>
+            <!-- 画面数 -->
+            <div style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px">画面数</div>
+            <div class="mock-stepper" style="margin:0">
+              <div class="mock-step-btn">−</div>
+              <div class="mock-step-num">4</div>
+              <div class="mock-step-btn">＋</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary)">← クリックするとドロップダウンが開きます</div>
+        </div>
+      </div>
+
+      <!-- ドロップダウンモックアップ -->
+      <div class="mockup-wrap" style="margin-top:12px">
+        <div class="mockup-label-bar">ドロップダウンで3種類から選択</div>
+        <div class="mockup-body">
+          <div class="mock-layout-dropdown">
+            <div class="mock-layout-option active">
+              <div class="mock-layout-option-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <rect x="0" y="0" width="6" height="6" rx="1"/>
+                  <rect x="8" y="0" width="6" height="6" rx="1"/>
+                  <rect x="0" y="8" width="6" height="6" rx="1"/>
+                  <rect x="8" y="8" width="6" height="6" rx="1"/>
+                </svg>
+              </div>
+              グリッド
+            </div>
+            <div class="mock-layout-option">
+              <div class="mock-layout-option-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <rect x="0" y="0" width="14" height="3" rx="1"/>
+                  <rect x="0" y="5.5" width="14" height="3" rx="1"/>
+                  <rect x="0" y="11" width="14" height="3" rx="1"/>
+                </svg>
+              </div>
+              縦一列
+            </div>
+            <div class="mock-layout-option">
+              <div class="mock-layout-option-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <rect x="0" y="0" width="8" height="14" rx="1"/>
+                  <rect x="10" y="0" width="4" height="6" rx="1"/>
+                  <rect x="10" y="8" width="4" height="6" rx="1"/>
+                </svg>
+              </div>
+              メイン＋サイド
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3種類の説明 -->
+      <div class="steps" style="margin-top:20px">
+        <div class="step-item">
+          <div class="step-badge">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="6" height="6" rx="1"/>
+              <rect x="8" y="0" width="6" height="6" rx="1"/>
+              <rect x="0" y="8" width="6" height="6" rx="1"/>
+              <rect x="8" y="8" width="6" height="6" rx="1"/>
+            </svg>
+          </div>
+          <div class="step-text">
+            <strong>グリッド（デフォルト）</strong>
+            <span>画面数に応じて自動的に格子状に並べます。1画面は1列、2〜4画面は2列、5〜9画面は3列で均等配置されます。</span>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-badge">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="14" height="3" rx="1"/>
+              <rect x="0" y="5.5" width="14" height="3" rx="1"/>
+              <rect x="0" y="11" width="14" height="3" rx="1"/>
+            </svg>
+          </div>
+          <div class="step-text">
+            <strong>縦一列</strong>
+            <span>すべてのパネルを1列に縦並びにします。上下にスクロールして各配信を確認できます。スマートフォン縦画面でも同じ表示になります。</span>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-badge">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="8" height="14" rx="1"/>
+              <rect x="10" y="0" width="4" height="6" rx="1"/>
+              <rect x="10" y="8" width="4" height="6" rx="1"/>
+            </svg>
+          </div>
+          <div class="step-text">
+            <strong>メイン＋サイド</strong>
+            <span>1枚目のパネルを左2/3に大きく表示し、2枚目以降を右1/3に縦並びで小さく配置します。メインで見たい配信を1枚目に置き、他を横でサブとして表示する視聴スタイルに最適です。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- メイン＋サイドのレイアウトモックアップ -->
+      <div class="mockup-wrap">
+        <div class="mockup-label-bar">メイン＋サイドのレイアウト例（3画面）</div>
+        <div class="mockup-body">
+          <div class="mock-grid-main-side">
+            <div class="mock-cell">
+              <div class="mock-cell-h"><span style="background:rgba(255,0,0,0.2);color:#ff5a5a;padding:1px 4px;border-radius:3px;font-size:7px;font-weight:700">YT</span> メイン（1枚目）</div>
+              <div class="mock-cell-body"><div class="mock-play-btn">▶</div></div>
+            </div>
+            <div class="mock-cell">
+              <div class="mock-cell-h" style="font-size:8px"><span style="background:rgba(145,71,255,0.2);color:#bf94ff;padding:1px 4px;border-radius:3px;font-size:7px;font-weight:700">TW</span> サイド（2枚目）</div>
+              <div class="mock-cell-body"><div class="mock-play-btn" style="font-size:10px">▶</div></div>
+            </div>
+            <div class="mock-cell">
+              <div class="mock-cell-h" style="font-size:8px"><span style="background:rgba(145,71,255,0.2);color:#bf94ff;padding:1px 4px;border-radius:3px;font-size:7px;font-weight:700">TW</span> サイド（3枚目）</div>
+              <div class="mock-cell-body"><div class="mock-play-btn" style="font-size:10px">▶</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <span class="tip-icon">💡</span>
+        <span>メイン＋サイドモードでは、1枚目のパネルがメイン画面になります。メインに表示したい配信を1枚目に置き、サブの配信を2枚目以降に追加してください。パネルの並び替え（ドラッグ&ドロップ）で順番を変えられます。</span>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="guide-section" id="move">
+      <div class="section-num">5</div>
       <h2 class="section-title">パネルを並び替える</h2>
       <p class="section-lead">パネルをドラッグ&ドロップすることで、自由に順番を入れ替えられます。</p>
 
@@ -880,9 +1085,9 @@
       </div>
     </section>
 
-    <!-- 5 -->
+    <!-- 6 -->
     <section class="guide-section" id="controls">
-      <div class="section-num">5</div>
+      <div class="section-num">6</div>
       <h2 class="section-title">再生・ミュートを操作する</h2>
       <p class="section-lead">各パネルのヘッダーにあるボタンで、個別に再生・停止・ミュートを操作できます。</p>
 
@@ -927,9 +1132,9 @@
       </div>
     </section>
 
-    <!-- 6 -->
+    <!-- 7 -->
     <section class="guide-section" id="title">
-      <div class="section-num">6</div>
+      <div class="section-num">7</div>
       <h2 class="section-title">タイトルを変更する</h2>
       <p class="section-lead">パネルヘッダーに表示されているチャンネル名をクリックすると、自分好みの名前に変更できます。</p>
 
@@ -945,15 +1150,15 @@
           <div class="step-badge">2</div>
           <div class="step-text">
             <strong>名前を入力してEnter</strong>
-            <span>好きな名前を入力してEnterキーで確定。Escキーで変更なしに閉じます。Enterを押すと入力欄が開いたままなので続けて編集できます。</span>
+            <span>好きな名前を入力してEnterキーで確定。Escキーでも確定して閉じます。Enterを押すと入力欄が開いたままなので続けて編集できます。</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 7 -->
+    <!-- 8 -->
     <section class="guide-section" id="reload">
-      <div class="section-num">7</div>
+      <div class="section-num">8</div>
       <h2 class="section-title">動画をリロードする</h2>
       <p class="section-lead">配信が止まったり黒画面になったりした場合、リロードボタンで動画を再読み込みできます。</p>
 
@@ -968,9 +1173,9 @@
       </div>
     </section>
 
-    <!-- 8 -->
+    <!-- 9 -->
     <section class="guide-section" id="delete">
-      <div class="section-num">8</div>
+      <div class="section-num">9</div>
       <h2 class="section-title">パネルを削除する</h2>
       <p class="section-lead">不要になった配信パネルは「✕」ボタンで削除できます。後続のパネルは自動的に詰めて表示されます。</p>
 
@@ -1028,7 +1233,7 @@
         <div class="mockup-wrap">
           <div class="mockup-label-bar">Q. スマートフォンでも使えますか？</div>
           <div class="mockup-body">
-            <p style="font-size:13px;color:var(--text-secondary);line-height:1.75">スマートフォンのブラウザからもご利用いただけます。<b>縦画面</b>ではパネルが1列に縦並びで表示され、上下にスクロールして各配信を確認できます。<b>横画面</b>に回転すると複数のパネルが横並びで表示されます。多画面を同時に確認したい場合は横画面またはPC・タブレットでのご利用がおすすめです。</p>
+            <p style="font-size:13px;color:var(--text-secondary);line-height:1.75">スマートフォンのブラウザからもご利用いただけます。<b>縦画面</b>ではレイアウト設定に関わらず、パネルが常に1列縦並びで表示され、上下にスクロールして各配信を確認できます。<b>横画面</b>に回転すると、選択中のレイアウトモード（グリッド・縦一列・メイン＋サイド）で表示されます。多画面を同時に確認したい場合は横画面またはPC・タブレットでのご利用がおすすめです。レイアウトの切り替えについては「<a href="#layout" style="color:var(--accent-light)">レイアウトを切り替える</a>」をご覧ください。</p>
           </div>
         </div>
 
@@ -1049,7 +1254,7 @@
 
 <footer>
   <div class="footer-inner">
-    <span class="footer-copy">© 2025 MultiStream</span>
+    <span class="footer-copy">© 2026 MultiStream</span>
     <div class="footer-links">
       <a href="/" class="footer-link">ホーム</a>
       <a href="/privacy" class="footer-link">プライバシーポリシー</a>

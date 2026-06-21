@@ -819,6 +819,19 @@
     border-bottom: none;
   }
 
+  /* ─── Mobile Landscape（ノッチ・ダイナミックアイランド対応） ─── */
+  @media (max-width: 1024px) and (orientation: landscape) {
+    header {
+      padding-left:  max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+    }
+    #viewer {
+      padding-left:   max(4px, env(safe-area-inset-left));
+      padding-right:  max(4px, env(safe-area-inset-right));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+  }
+
   /* ─── Mobile Portrait ─── */
   @media (max-width: 768px) and (orientation: portrait) {
     #viewer {
@@ -1279,6 +1292,8 @@
   function initYTPlayer(i, s, autostart = false) {
     if (!ytApiReady) { pendingYT.push({i, s, autostart}); return; }
     if (!document.getElementById('yt-inner-' + i)) return;
+    // スロットの内容が差し替えられていたら古いエントリは無視する
+    if (slots[i]?.videoId !== s.videoId) return;
     let player;
     player = ytPlayers[i] = new YT.Player('yt-inner-' + i, {
       videoId:    s.videoId,
@@ -1355,7 +1370,10 @@
 
   window.onYouTubeIframeAPIReady = function() {
     ytApiReady = true;
-    pendingYT.forEach(({i, s, autostart}) => initYTPlayer(i, s, autostart));
+    // 同一スロットに複数エントリある場合は最後（最新）のみ処理
+    const latest = {};
+    pendingYT.forEach(item => { latest[item.i] = item; });
+    Object.values(latest).forEach(({i, s, autostart}) => initYTPlayer(i, s, autostart));
     pendingYT = [];
   };
 
@@ -1386,6 +1404,7 @@
     const wasMuted   = !!(slotState[i]?.muted);
     slotState[i] = { playing: false, muted: wasMuted };
     renderPanelFull(i, wasPlaying);
+    updateGridLayout();
   }
 
   // ─────────────────── SLOT OPERATIONS ───────────────────
@@ -1466,6 +1485,7 @@
         <span class="empty-icon">＋</span>
         <span class="empty-label">配信を追加</span>
       </div>`;
+    updateGridLayout();
   }
 
   function swapPanels(a, b) {
@@ -1485,6 +1505,7 @@
 
     renderPanelFull(a, slots[a] ? bWasPlaying : false);
     renderPanelFull(b, slots[b] ? aWasPlaying : false);
+    updateGridLayout();
   }
 
   // ─────────────────── CONFIRM DIALOG ───────────────────
@@ -1529,9 +1550,10 @@
     document.getElementById('area-youtube').classList.toggle('visible', tab === 'youtube');
     document.getElementById('area-twitch').classList.toggle('visible', tab === 'twitch');
     resetPreview();
-    document.getElementById('modal-check').disabled = false;
-    setTimeout(() =>
-      document.getElementById(tab === 'youtube' ? 'yt-input' : 'tw-input').focus(), 30);
+    // 切り替え先タブの入力が空なら「確認する」は無効のまま
+    const inputEl = document.getElementById(tab === 'youtube' ? 'yt-input' : 'tw-input');
+    document.getElementById('modal-check').disabled = !(inputEl && inputEl.value.trim());
+    setTimeout(() => inputEl && inputEl.focus(), 30);
   }
 
   // Reset to input state (called on openModal / tab switch / backToInput)
@@ -1581,7 +1603,8 @@
                  url:`https://www.youtube.com/watch?v=${id}` };
     } else {
       const raw = document.getElementById('tw-input').value.trim();
-      const ch  = raw.replace(/^@/,'').replace(/.*twitch\.tv\/([^/?#]+).*/,'$1').trim();
+      const ch  = raw.replace(/^@/,'').replace(/.*twitch\.tv\/([^/?#]+).*/,'$1').trim()
+                     .replace(/[^a-zA-Z0-9_]/g, '');  // Twitchユーザー名の有効文字のみ
       if (!ch) {
         area.style.display = 'block';
         area.innerHTML = `<div class="preview-error">
@@ -1697,6 +1720,7 @@
     slotState[slot] = { playing: false, muted: false };
     closeModal();
     renderPanelFull(slot);
+    updateGridLayout();
   }
 
   // Enable "確認する" when there's text; reset preview if user edits after preview shown
