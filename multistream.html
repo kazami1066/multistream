@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>MultiStream — マルチ配信ビューワー</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -744,6 +744,81 @@
     justify-content: flex-end;
   }
 
+  /* ─── Layout Picker ─── */
+  .layout-picker { position: relative; }
+  .layout-btn {
+    width: 36px; height: 30px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .layout-btn:hover, .layout-btn.open {
+    border-color: var(--accent);
+    color: var(--accent-light);
+    background: var(--accent-glow);
+  }
+  .layout-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--surface-high);
+    border: 1px solid var(--border-mid);
+    border-radius: 12px;
+    padding: 6px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    z-index: 200;
+  }
+  .layout-dropdown.open { display: flex; }
+  .layout-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px;
+    background: transparent; border: 1px solid transparent;
+    cursor: pointer; color: var(--text-secondary);
+    font-size: 13px; font-weight: 500; font-family: inherit;
+    width: 100%; text-align: left; transition: all 0.15s;
+  }
+  .layout-option:hover { background: var(--surface); color: var(--text-primary); }
+  .layout-option.active {
+    background: var(--accent-glow);
+    color: var(--accent-light);
+    border-color: rgba(145,71,255,0.3);
+  }
+  .layout-option-icon {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ─── Column mode ─── */
+  #viewer.mode-column {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: unset !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+  #viewer.mode-column .panel {
+    height: calc(56.25vw + 34px);
+    flex-shrink: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+  }
+  #viewer.mode-column .panel:last-child {
+    border-bottom: none;
+  }
+
   /* ─── Mobile Portrait ─── */
   @media (max-width: 768px) and (orientation: portrait) {
     #viewer {
@@ -752,12 +827,25 @@
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
+      gap: 0 !important;
+      padding: 0 !important;
+      padding-left:   env(safe-area-inset-left, 0px) !important;
+      padding-right:  env(safe-area-inset-right, 0px) !important;
+      padding-bottom: env(safe-area-inset-bottom, 0px) !important;
     }
     .panel {
-      /* 16:9 の高さ + パネルヘッダー分 */
-      height: calc(56.25vw + 34px);
+      height: calc(
+        (100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+        * 9 / 16 + 34px
+      );
       flex-shrink: 0;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      border-bottom: 1px solid var(--border);
     }
+    .panel:last-child { border-bottom: none; }
   }
 </style>
 </head>
@@ -780,6 +868,51 @@
   </div>
   <div class="header-divider"></div>
   <div class="slot-ctrl">
+    <!-- Layout picker -->
+    <div class="layout-picker" id="layout-picker">
+      <button class="layout-btn" id="layout-btn" onclick="toggleLayoutPicker()" title="レイアウトを変更">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+          <rect x="0" y="0" width="6" height="6" rx="1"/>
+          <rect x="8" y="0" width="6" height="6" rx="1"/>
+          <rect x="0" y="8" width="6" height="6" rx="1"/>
+          <rect x="8" y="8" width="6" height="6" rx="1"/>
+        </svg>
+      </button>
+      <div class="layout-dropdown" id="layout-dropdown">
+        <button class="layout-option active" data-layout="grid" onclick="setLayout('grid')">
+          <div class="layout-option-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="6" height="6" rx="1"/>
+              <rect x="8" y="0" width="6" height="6" rx="1"/>
+              <rect x="0" y="8" width="6" height="6" rx="1"/>
+              <rect x="8" y="8" width="6" height="6" rx="1"/>
+            </svg>
+          </div>
+          グリッド
+        </button>
+        <button class="layout-option" data-layout="column" onclick="setLayout('column')">
+          <div class="layout-option-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="14" height="3" rx="1"/>
+              <rect x="0" y="5.5" width="14" height="3" rx="1"/>
+              <rect x="0" y="11" width="14" height="3" rx="1"/>
+            </svg>
+          </div>
+          縦一列
+        </button>
+        <button class="layout-option" data-layout="main-side" onclick="setLayout('main-side')">
+          <div class="layout-option-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="0" y="0" width="8" height="14" rx="1"/>
+              <rect x="10" y="0" width="4" height="6" rx="1"/>
+              <rect x="10" y="8" width="4" height="6" rx="1"/>
+            </svg>
+          </div>
+          メイン＋サイド
+        </button>
+      </div>
+    </div>
+    <div class="header-divider"></div>
     <span class="slot-ctrl-label">画面数</span>
     <div class="slot-stepper">
       <button class="count-btn" id="btn-minus" onclick="changeSlotCount(-1)" title="画面を減らす">−</button>
@@ -885,6 +1018,7 @@
   let dragSrc    = null;
   let currentTab = null;
   let targetSlot = 0;
+  let layoutMode = 'grid';
 
   // Modal preview state
   let previewReady    = false;  // true when preview confirmed and addStream() is valid
@@ -908,12 +1042,79 @@
     if (n <= 4) return 2;
     return 3;
   }
+  const LAYOUT_ICONS = {
+    grid: `<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="0" width="6" height="6" rx="1"/><rect x="8" y="0" width="6" height="6" rx="1"/><rect x="0" y="8" width="6" height="6" rx="1"/><rect x="8" y="8" width="6" height="6" rx="1"/></svg>`,
+    column: `<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="0" width="14" height="3" rx="1"/><rect x="0" y="5.5" width="14" height="3" rx="1"/><rect x="0" y="11" width="14" height="3" rx="1"/></svg>`,
+    'main-side': `<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="0" width="8" height="14" rx="1"/><rect x="10" y="0" width="4" height="6" rx="1"/><rect x="10" y="8" width="4" height="6" rx="1"/></svg>`
+  };
+
+  function toggleLayoutPicker() {
+    const dd  = document.getElementById('layout-dropdown');
+    const btn = document.getElementById('layout-btn');
+    const open = dd.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  }
+
+  function setLayout(mode) {
+    layoutMode = mode;
+    document.querySelectorAll('.layout-option').forEach(el =>
+      el.classList.toggle('active', el.dataset.layout === mode)
+    );
+    document.getElementById('layout-btn').innerHTML = LAYOUT_ICONS[mode];
+    document.getElementById('layout-dropdown').classList.remove('open');
+    document.getElementById('layout-btn').classList.remove('open');
+    updateGridLayout();
+  }
+
+  document.addEventListener('click', e => {
+    const picker = document.getElementById('layout-picker');
+    if (picker && !picker.contains(e.target)) {
+      document.getElementById('layout-dropdown').classList.remove('open');
+      document.getElementById('layout-btn').classList.remove('open');
+    }
+  });
+
   function updateGridLayout() {
     const viewer = document.getElementById('viewer');
     const n = slots.length;
-    const cols = calcCols(n);
-    viewer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    viewer.style.gridTemplateRows    = `repeat(${Math.ceil(n / cols)}, 1fr)`;
+
+    // Reset mode class and per-panel styles
+    viewer.classList.remove('mode-column');
+    viewer.querySelectorAll('.panel').forEach(p => {
+      p.style.gridColumn = '';
+      p.style.gridRow = '';
+    });
+
+    if (layoutMode === 'column') {
+      viewer.classList.add('mode-column');
+      viewer.style.gridTemplateColumns = '1fr';
+      viewer.style.gridTemplateRows = '';
+
+    } else if (layoutMode === 'main-side' && n > 1) {
+      const sideCount = n - 1;
+      viewer.style.gridTemplateColumns = '2fr 1fr';
+      viewer.style.gridTemplateRows = `repeat(${sideCount}, 1fr)`;
+      viewer.style.overflow = '';
+      // メインパネル（slot 0）：左列・全行スパン
+      const mainPanel = document.getElementById('panel-0');
+      if (mainPanel) {
+        mainPanel.style.gridColumn = '1';
+        mainPanel.style.gridRow = `1 / ${sideCount + 1}`;
+      }
+      // サイドパネル（slot 1〜）：右列
+      for (let i = 1; i < n; i++) {
+        const p = document.getElementById('panel-' + i);
+        if (p) p.style.gridColumn = '2';
+      }
+
+    } else {
+      // grid（デフォルト）またはmain-sideでn<=1
+      const cols = calcCols(n);
+      viewer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      viewer.style.gridTemplateRows    = `repeat(${Math.ceil(n / cols)}, 1fr)`;
+      viewer.style.overflow = '';
+    }
+
     document.getElementById('slot-count-label').textContent = n;
     document.getElementById('btn-minus').disabled = n <= 1;
     document.getElementById('btn-plus').disabled  = n >= MAX_SLOTS;
