@@ -85,6 +85,52 @@
     background: var(--border);
   }
 
+  /* ─── Share Button ─── */
+  .share-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 32px;
+    height: 30px;
+    border-radius: 7px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .share-btn:hover {
+    background: var(--accent-glow);
+    color: var(--accent-light);
+    border-color: var(--accent);
+  }
+
+  /* ─── Toast ─── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--surface-high);
+    border: 1px solid var(--border-mid);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   /* ─── Slot Controls ─── */
   .slot-ctrl {
     display: flex;
@@ -335,6 +381,15 @@
     position: relative;
   }
 
+  /* ─── Panel Body (video + chat wrapper) ─── */
+  .panel-body {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   /* ─── Media Container ─── */
   .media-container {
     flex: 1;
@@ -342,6 +397,32 @@
     position: relative;
     overflow: hidden;
     background: #000;
+  }
+
+  /* ─── Chat Container ─── */
+  .chat-container {
+    width: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-left: 0px solid var(--border);
+    background: var(--bg);
+    transition: width 0.25s cubic-bezier(0.4,0,0.2,1),
+                border-left-width 0.25s;
+  }
+  .chat-container.open {
+    width: 40%;
+    border-left-width: 1px;
+  }
+  .chat-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* チャットはスマホ縦画面では非表示 */
+  @media (max-width: 768px) and (orientation: portrait) {
+    .chat-container { display: none !important; }
   }
   .media-container > *:not(.drag-overlay) {
     position: absolute !important;
@@ -934,6 +1015,12 @@
       </div>
       <button class="count-btn" id="btn-plus" onclick="changeSlotCount(+1)" title="画面を増やす">＋</button>
     </div>
+    <div class="header-divider"></div>
+    <button class="share-btn" onclick="shareURL()" title="URLをコピーして共有">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 1.5h3.5V5M13.5 1.5L7 8M6 2.5H2.5A1 1 0 001.5 3.5v8A1 1 0 002.5 12.5h8a1 1 0 001-1V8"/>
+      </svg>
+    </button>
   </div>
 </header>
 
@@ -1048,6 +1135,133 @@
     return -1;
   }
 
+  // ─────────────────── URL SHARE ───────────────────
+  function getShareURL() {
+    const parts = [layoutMode];
+    slots.forEach(s => {
+      if (s) {
+        if (s.type === 'youtube') {
+          parts.push(`yt:${s.videoId}:${encodeURIComponent(s.label)}`);
+        } else {
+          parts.push(`tw:${s.channel}:${encodeURIComponent(s.label)}`);
+        }
+      } else {
+        parts.push('_');
+      }
+    });
+    return `${location.origin}${location.pathname}#${parts.join('/')}`;
+  }
+
+  function loadFromHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const parts = hash.split('/');
+    if (parts.length < 2) return;
+
+    const layoutPart = parts[0];
+    if (['grid', 'column', 'main-side'].includes(layoutPart)) {
+      layoutMode = layoutPart;
+    }
+
+    const newSlots = [];
+    for (let i = 1; i < parts.length && newSlots.length < MAX_SLOTS; i++) {
+      const part = parts[i];
+      if (part === '_') {
+        newSlots.push(null);
+      } else if (part.startsWith('yt:')) {
+        const idx1 = part.indexOf(':');
+        const idx2 = part.indexOf(':', idx1 + 1);
+        const videoId = part.slice(idx1 + 1, idx2);
+        const label   = decodeURIComponent(part.slice(idx2 + 1) || videoId);
+        if (videoId) newSlots.push({ type:'youtube', videoId, label,
+          url:`https://www.youtube.com/watch?v=${videoId}` });
+      } else if (part.startsWith('tw:')) {
+        const idx1 = part.indexOf(':');
+        const idx2 = part.indexOf(':', idx1 + 1);
+        const channel = part.slice(idx1 + 1, idx2);
+        const label   = decodeURIComponent(part.slice(idx2 + 1) || channel);
+        if (channel) newSlots.push({ type:'twitch', channel, label,
+          url:`https://www.twitch.tv/${channel}` });
+      }
+    }
+
+    if (newSlots.length > 0) {
+      slots = newSlots;
+      slots.forEach((_, i) => { slotState[i] = { playing: false, muted: false, chatOpen: false }; });
+    }
+  }
+
+  async function shareURL() {
+    const url = getShareURL();
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('🔗 URLをコピーしました！');
+    } catch {
+      prompt('このURLをコピーして共有してください:', url);
+    }
+  }
+
+  function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
+  // ─────────────────── CHAT TOGGLE ───────────────────
+  function _chatIframeSrc(i) {
+    const s = slots[i];
+    if (!s) return null;
+    const domain = location.hostname || 'localhost';
+    if (s.type === 'twitch') {
+      return `https://www.twitch.tv/embed/${s.channel}/chat?parent=${domain}&darkpopout`;
+    } else {
+      // YouTube: need video id; works only for live streams
+      return `https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${domain}`;
+    }
+  }
+
+  function _openChat(i) {
+    const container = document.getElementById('chat-' + i);
+    if (!container) return;
+    container.classList.add('open');
+    if (!container.querySelector('iframe')) {
+      const src = _chatIframeSrc(i);
+      if (src) {
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.allow = 'autoplay';
+        container.appendChild(iframe);
+      }
+    }
+    const btn = document.getElementById('chat-btn-' + i);
+    if (btn) btn.classList.add('active');
+    if (slotState[i]) slotState[i].chatOpen = true;
+  }
+
+  function _closeChat(i) {
+    const container = document.getElementById('chat-' + i);
+    if (!container) return;
+    container.classList.remove('open');
+    const btn = document.getElementById('chat-btn-' + i);
+    if (btn) btn.classList.remove('active');
+    if (slotState[i]) slotState[i].chatOpen = false;
+  }
+
+  function toggleChat(i) {
+    if (!slots[i]) return;
+    const st = slotState[i] || {};
+    if (st.chatOpen) _closeChat(i);
+    else             _openChat(i);
+  }
+
   // ─────────────────── GRID LAYOUT ───────────────────
   function calcCols(n) {
     if (n <= 1) return 1;
@@ -1138,8 +1352,9 @@
 
   function headerHTML(i) {
     const s  = slots[i];
-    const st = slotState[i] || { playing: false, muted: false };
+    const st = slotState[i] || { playing: false, muted: false, chatOpen: false };
     if (!s) return '';
+    const chatActive = st.chatOpen ? ' active' : '';
     return `<div class="panel-header">
         <span class="badge badge-${s.type}">${s.type === 'youtube' ? 'YT' : 'TW'}</span>
         <div class="title-area">
@@ -1152,6 +1367,8 @@
         <button class="ctrl-btn${st.muted ? ' active' : ''}" id="mute-btn-${i}"
           onclick="toggleMute(${i})" title="ミュート/解除">${st.muted ? '🔇' : '🔊'}</button>
         <button class="ctrl-btn reload-btn" onclick="reloadSlot(${i})" title="動画をリロード">↺</button>
+        <button class="ctrl-btn chat-btn${chatActive}" id="chat-btn-${i}"
+          onclick="toggleChat(${i})" title="チャットを開く/閉じる">💬</button>
         <div class="sep"></div>
         <a href="${escHtml(s.url)}" target="_blank" class="panel-ext" title="別タブで開く">↗</a>
         <button class="panel-close" onclick="clearSlot(${i})" title="動画を消す">✕</button>
@@ -1191,14 +1408,21 @@
     const innerTag = s.type === 'youtube' ? `<div id="yt-inner-${i}"></div>`
                                            : `<div id="tw-inner-${i}"></div>`;
     panel.innerHTML = `${headerHTML(i)}
-      <div class="media-container" id="media-${i}">
-        ${innerTag}
-        <div class="drag-overlay"></div>
+      <div class="panel-body">
+        <div class="media-container" id="media-${i}">
+          ${innerTag}
+          <div class="drag-overlay"></div>
+        </div>
+        <div class="chat-container" id="chat-${i}"></div>
       </div>`;
 
     setupTitleEdit(i);
-    if (slotState[i]) slotState[i].playing = false;
-    else slotState[i] = { playing: false, muted: false };
+    if (slotState[i]) {
+      slotState[i].playing = false;
+      if (slotState[i].chatOpen) _openChat(i);
+    } else {
+      slotState[i] = { playing: false, muted: false, chatOpen: false };
+    }
 
     setTimeout(() => {
       if (s.type === 'youtube') initYTPlayer(i, s, autostart);
@@ -1402,7 +1626,8 @@
     if (!slots[i]) return;
     const wasPlaying = !!(slotState[i]?.playing);
     const wasMuted   = !!(slotState[i]?.muted);
-    slotState[i] = { playing: false, muted: wasMuted };
+    const wasChatOpen = !!(slotState[i]?.chatOpen);
+    slotState[i] = { playing: false, muted: wasMuted, chatOpen: wasChatOpen };
     renderPanelFull(i, wasPlaying);
     updateGridLayout();
   }
@@ -1473,6 +1698,11 @@
       twPlayers[j] = twPlayers[j + 1]; delete twPlayers[j + 1];
       slots[j]     = slots[j + 1];
       slotState[j] = slotState[j + 1];
+      // chat-container IDを更新
+      const chatEl = nextPanel.querySelector('.chat-container');
+      if (chatEl) chatEl.id = 'chat-' + j;
+      const mediaEl = nextPanel.querySelector('.media-container');
+      if (mediaEl) mediaEl.id = 'media-' + j;
       renderPanelHeader(j);
     }
 
@@ -1495,13 +1725,15 @@
     const bWasPlaying = !!(slotState[b]?.playing);
     const aMuted      = !!(slotState[a]?.muted);
     const bMuted      = !!(slotState[b]?.muted);
+    const aChatOpen   = !!(slotState[a]?.chatOpen);
+    const bChatOpen   = !!(slotState[b]?.chatOpen);
 
     destroyPlayerAt(a);
     destroyPlayerAt(b);
 
     [slots[a], slots[b]] = [slots[b], slots[a]];
-    slotState[a] = { playing: false, muted: bMuted };
-    slotState[b] = { playing: false, muted: aMuted };
+    slotState[a] = { playing: false, muted: bMuted, chatOpen: bChatOpen };
+    slotState[b] = { playing: false, muted: aMuted, chatOpen: aChatOpen };
 
     renderPanelFull(a, slots[a] ? bWasPlaying : false);
     renderPanelFull(b, slots[b] ? aWasPlaying : false);
@@ -1717,7 +1949,7 @@
     const slot = targetSlot;
     const newStream = pendingStream;
     slots[slot]     = newStream;
-    slotState[slot] = { playing: false, muted: false };
+    slotState[slot] = { playing: false, muted: false, chatOpen: false };
     closeModal();
     renderPanelFull(slot);
     updateGridLayout();
@@ -1796,7 +2028,13 @@
     }
   });
 
+  loadFromHash();
   initGrid();
+  // ハッシュで指定されたレイアウトをボタンに反映
+  document.getElementById('layout-btn').innerHTML = LAYOUT_ICONS[layoutMode];
+  document.querySelectorAll('.layout-option').forEach(el =>
+    el.classList.toggle('active', el.dataset.layout === layoutMode)
+  );
 </script>
 
 <script src="https://www.youtube.com/iframe_api"></script>
